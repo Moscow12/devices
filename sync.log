@@ -1,0 +1,505 @@
+2025-08-14 13:40:00,377 [INFO] Starting attendance sync...
+2025-08-14 13:40:00,377 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 13:41:52,665 [INFO] No new attendance logs found.
+2025-08-14 13:41:55,463 [INFO] Next sync in 5.0 minutes...
+2025-08-14 13:46:55,464 [INFO] Starting attendance sync...
+2025-08-14 13:46:55,464 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 13:48:47,102 [INFO] No new attendance logs found.
+2025-08-14 13:48:49,915 [INFO] Next sync in 5.0 minutes...
+2025-08-14 13:53:49,915 [INFO] Starting attendance sync...
+2025-08-14 13:53:49,916 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 13:55:40,504 [INFO] Found 1 new logs. Sending to Laravel...
+2025-08-14 13:55:40,554 [INFO] Logs synced successfully.
+2025-08-14 13:55:43,187 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:00:43,187 [INFO] Starting attendance sync...
+2025-08-14 14:00:43,187 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:02:55,295 [INFO] Found 1 new logs. Sending to Laravel...
+2025-08-14 14:02:55,373 [INFO] Logs synced successfully.
+2025-08-14 14:02:58,080 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:07:58,080 [INFO] Starting attendance sync...
+2025-08-14 14:07:58,080 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:09:51,490 [INFO] Found 3 new logs. Sending to Laravel...
+2025-08-14 14:09:51,749 [INFO] Logs synced successfully.
+2025-08-14 14:09:54,359 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:14:54,359 [INFO] Starting attendance sync...
+2025-08-14 14:14:54,359 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:17:10,849 [INFO] No new attendance logs found.
+2025-08-14 14:17:13,584 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:22:13,584 [INFO] Starting attendance sync...
+2025-08-14 14:22:13,584 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:24:04,983 [INFO] Found 3 new logs. Sending to Laravel...
+2025-08-14 14:24:05,200 [INFO] Logs synced successfully.
+2025-08-14 14:24:07,628 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:29:07,629 [INFO] Starting attendance sync...
+2025-08-14 14:29:07,629 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:31:02,624 [INFO] Found 1 new logs. Sending to Laravel...
+2025-08-14 14:31:02,671 [INFO] Logs synced successfully.
+2025-08-14 14:31:05,362 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:36:05,362 [INFO] Starting attendance sync...
+2025-08-14 14:36:05,363 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:37:53,888 [INFO] Found 1 new logs. Sending to Laravel...
+2025-08-14 14:37:53,936 [INFO] Logs synced successfully.
+2025-08-14 14:37:56,703 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:42:56,703 [INFO] Starting attendance sync...
+2025-08-14 14:42:56,703 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:44:44,721 [INFO] Found 2 new logs. Sending to Laravel...
+2025-08-14 14:44:44,820 [INFO] Logs synced successfully.
+2025-08-14 14:44:47,513 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:49:47,513 [INFO] Starting attendance sync...
+2025-08-14 14:49:47,514 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:51:37,266 [INFO] Found 3 new logs. Sending to Laravel...
+2025-08-14 14:51:37,486 [INFO] Logs synced successfully.
+2025-08-14 14:51:39,578 [INFO] Next sync in 5.0 minutes...
+2025-08-14 14:56:39,579 [INFO] Starting attendance sync...
+2025-08-14 14:56:39,579 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 14:58:29,105 [INFO] Found 1 new logs. Sending to Laravel...
+2025-08-14 14:58:29,323 [INFO] Logs synced successfully.
+2025-08-14 14:58:31,949 [INFO] Next sync in 5.0 minutes...
+2025-08-14 15:03:31,949 [INFO] Starting attendance sync...
+2025-08-14 15:03:31,950 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 15:05:26,834 [INFO] No new attendance logs found.
+2025-08-14 15:05:29,540 [INFO] Next sync in 5.0 minutes...
+2025-08-14 15:10:29,540 [INFO] Starting attendance sync...
+2025-08-14 15:10:29,540 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 15:12:20,447 [INFO] Found 1 new logs. Sending to Laravel...
+2025-08-14 15:12:20,497 [INFO] Logs synced successfully.
+2025-08-14 15:12:23,266 [INFO] Next sync in 5.0 minutes...
+2025-08-14 15:17:23,266 [INFO] Starting attendance sync...
+2025-08-14 15:17:23,267 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 15:19:12,776 [INFO] Found 1 new logs. Sending to Laravel...
+2025-08-14 15:19:12,825 [INFO] Logs synced successfully.
+2025-08-14 15:19:15,569 [INFO] Next sync in 5.0 minutes...
+2025-08-14 15:24:15,570 [INFO] Starting attendance sync...
+2025-08-14 15:24:15,570 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 15:26:08,911 [INFO] No new attendance logs found.
+2025-08-14 15:26:11,815 [INFO] Next sync in 5.0 minutes...
+2025-08-14 15:31:11,816 [INFO] Starting attendance sync...
+2025-08-14 15:31:11,816 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 15:33:10,316 [INFO] Found 7 new logs. Sending to Laravel...
+2025-08-14 15:33:10,956 [INFO] Logs synced successfully.
+2025-08-14 15:33:12,419 [INFO] Next sync in 5.0 minutes...
+2025-08-14 15:38:12,419 [INFO] Starting attendance sync...
+2025-08-14 15:38:12,420 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 15:40:56,417 [INFO] Found 9 new logs. Sending to Laravel...
+2025-08-14 15:40:57,205 [INFO] Logs synced successfully.
+2025-08-14 15:40:58,294 [INFO] Next sync in 5.0 minutes...
+2025-08-14 15:45:58,295 [INFO] Starting attendance sync...
+2025-08-14 15:45:58,295 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 15:48:24,623 [INFO] Found 4 new logs. Sending to Laravel...
+2025-08-14 15:48:25,257 [INFO] Logs synced successfully.
+2025-08-14 15:48:26,972 [INFO] Next sync in 5.0 minutes...
+2025-08-14 15:53:26,972 [INFO] Starting attendance sync...
+2025-08-14 15:53:26,973 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 15:55:19,830 [INFO] Found 6 new logs. Sending to Laravel...
+2025-08-14 15:55:20,269 [INFO] Logs synced successfully.
+2025-08-14 15:55:20,366 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:00:20,367 [INFO] Starting attendance sync...
+2025-08-14 16:00:20,367 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:02:14,617 [INFO] Found 6 new logs. Sending to Laravel...
+2025-08-14 16:02:15,010 [INFO] Logs synced successfully.
+2025-08-14 16:02:16,647 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:07:16,647 [INFO] Starting attendance sync...
+2025-08-14 16:07:16,648 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:09:48,295 [INFO] Found 6 new logs. Sending to Laravel...
+2025-08-14 16:09:48,881 [INFO] Logs synced successfully.
+2025-08-14 16:09:50,667 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:14:50,668 [INFO] Starting attendance sync...
+2025-08-14 16:14:50,668 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:17:11,342 [INFO] Found 6 new logs. Sending to Laravel...
+2025-08-14 16:17:11,875 [INFO] Logs synced successfully.
+2025-08-14 16:17:12,953 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:22:12,953 [INFO] Starting attendance sync...
+2025-08-14 16:22:12,954 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:24:23,282 [INFO] Found 1 new logs. Sending to Laravel...
+2025-08-14 16:24:23,334 [INFO] Logs synced successfully.
+2025-08-14 16:24:25,724 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:29:25,724 [INFO] Starting attendance sync...
+2025-08-14 16:29:25,724 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:29:30,728 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-08-14 16:29:30,730 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:34:30,730 [INFO] Starting attendance sync...
+2025-08-14 16:34:30,730 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:34:35,736 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-08-14 16:34:35,737 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:39:35,737 [INFO] Starting attendance sync...
+2025-08-14 16:39:35,738 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:39:40,743 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-08-14 16:39:40,744 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:44:40,744 [INFO] Starting attendance sync...
+2025-08-14 16:44:40,745 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:44:45,750 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-08-14 16:44:45,750 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:49:45,751 [INFO] Starting attendance sync...
+2025-08-14 16:49:45,751 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:49:50,754 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-08-14 16:49:50,756 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:54:50,757 [INFO] Starting attendance sync...
+2025-08-14 16:54:50,757 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 16:54:55,763 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-08-14 16:54:55,764 [INFO] Next sync in 5.0 minutes...
+2025-08-14 16:59:55,764 [INFO] Starting attendance sync...
+2025-08-14 16:59:55,765 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 17:00:00,771 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-08-14 17:00:00,772 [INFO] Next sync in 5.0 minutes...
+2025-08-14 17:05:00,773 [INFO] Starting attendance sync...
+2025-08-14 17:05:00,773 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-08-14 17:05:05,779 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-08-14 17:05:05,780 [INFO] Next sync in 5.0 minutes...
+2025-12-05 13:14:53,114 [INFO] Starting attendance sync...
+2025-12-05 13:14:53,123 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 13:17:01,274 [INFO] Found 16913 new logs. Sending to Laravel...
+2025-12-05 13:33:39,225 [INFO] Logs synced successfully.
+2025-12-05 13:33:39,546 [INFO] Next sync in 5.0 minutes...
+2025-12-05 13:38:39,546 [INFO] Starting attendance sync...
+2025-12-05 13:38:39,546 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 13:41:47,915 [INFO] Found 1 new logs. Sending to Laravel...
+2025-12-05 13:41:48,136 [INFO] Logs synced successfully.
+2025-12-05 13:41:48,184 [INFO] Next sync in 5.0 minutes...
+2025-12-05 13:46:48,185 [INFO] Starting attendance sync...
+2025-12-05 13:46:48,186 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 13:49:42,630 [INFO] No new attendance logs found.
+2025-12-05 13:49:42,654 [INFO] Next sync in 5.0 minutes...
+2025-12-05 13:54:42,654 [INFO] Starting attendance sync...
+2025-12-05 13:54:42,654 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 13:57:20,746 [INFO] Found 1 new logs. Sending to Laravel...
+2025-12-05 13:57:20,790 [INFO] Logs synced successfully.
+2025-12-05 13:57:20,904 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:02:20,904 [INFO] Starting attendance sync...
+2025-12-05 14:02:20,905 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 14:04:46,953 [INFO] Found 1 new logs. Sending to Laravel...
+2025-12-05 14:04:47,004 [INFO] Logs synced successfully.
+2025-12-05 14:04:47,015 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:09:47,015 [INFO] Starting attendance sync...
+2025-12-05 14:09:47,015 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 14:11:58,498 [INFO] Found 1 new logs. Sending to Laravel...
+2025-12-05 14:11:58,548 [INFO] Logs synced successfully.
+2025-12-05 14:11:58,637 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:16:58,637 [INFO] Starting attendance sync...
+2025-12-05 14:16:58,637 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 14:19:15,981 [INFO] No new attendance logs found.
+2025-12-05 14:19:16,066 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:24:16,067 [INFO] Starting attendance sync...
+2025-12-05 14:24:16,067 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 14:26:27,622 [INFO] Found 2 new logs. Sending to Laravel...
+2025-12-05 14:26:27,724 [INFO] Logs synced successfully.
+2025-12-05 14:26:27,958 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:31:27,959 [INFO] Starting attendance sync...
+2025-12-05 14:31:27,959 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 14:33:42,368 [INFO] No new attendance logs found.
+2025-12-05 14:33:42,425 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:38:42,426 [INFO] Starting attendance sync...
+2025-12-05 14:38:42,426 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 14:40:53,953 [INFO] Found 1 new logs. Sending to Laravel...
+2025-12-05 14:40:53,993 [INFO] Logs synced successfully.
+2025-12-05 14:40:54,047 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:45:54,048 [INFO] Starting attendance sync...
+2025-12-05 14:45:54,048 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 14:48:06,046 [INFO] No new attendance logs found.
+2025-12-05 14:48:06,164 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:53:06,164 [INFO] Starting attendance sync...
+2025-12-05 14:53:06,164 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 14:54:39,286 [ERROR] Error during sync: timed out
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 51, in sync_attendance
+    for att in conn.get_attendance():
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1553, in get_attendance
+    attendance_data, size = self.read_with_buffer(const.CMD_ATTLOG_RRQ)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1532, in read_with_buffer
+    data.append(self.__read_chunk(start,MAX_CHUNK))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1489, in __read_chunk
+    data = self.__recieve_chunk()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1436, in __recieve_chunk
+    resp, broken_header = self.__recieve_tcp_data(data_recv, size)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1369, in __recieve_tcp_data
+    resp, bh = self.__recieve_tcp_data(data_recv, size)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1369, in __recieve_tcp_data
+    resp, bh = self.__recieve_tcp_data(data_recv, size)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1369, in __recieve_tcp_data
+    resp, bh = self.__recieve_tcp_data(data_recv, size)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  [Previous line repeated 45 more times]
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1367, in __recieve_tcp_data
+    data_recv = bh + self.__sock.recv(size + 16 )
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: timed out
+2025-12-05 14:54:39,304 [INFO] Next sync in 5.0 minutes...
+2025-12-05 14:59:39,305 [INFO] Starting attendance sync...
+2025-12-05 14:59:39,305 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:02:34,135 [ERROR] Error during sync: timed out
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 51, in sync_attendance
+    for att in conn.get_attendance():
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1553, in get_attendance
+    attendance_data, size = self.read_with_buffer(const.CMD_ATTLOG_RRQ)
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1532, in read_with_buffer
+    data.append(self.__read_chunk(start,MAX_CHUNK))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1489, in __read_chunk
+    data = self.__recieve_chunk()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1436, in __recieve_chunk
+    resp, broken_header = self.__recieve_tcp_data(data_recv, size)
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1363, in __recieve_tcp_data
+    resp, bh = self.__recieve_tcp_data(data_recv, tcp_length - 8)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1393, in __recieve_tcp_data
+    data_recv = self.__recieve_raw_data(size)
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 1402, in __recieve_raw_data
+    data_recv = self.__sock.recv(size)
+                ^^^^^^^^^^^^^^^^^^^^^^
+TimeoutError: timed out
+2025-12-05 15:02:34,137 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:07:34,137 [INFO] Starting attendance sync...
+2025-12-05 15:07:34,137 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:07:39,142 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:07:39,143 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:12:39,144 [INFO] Starting attendance sync...
+2025-12-05 15:12:39,144 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:12:44,149 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:12:44,150 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:17:44,150 [INFO] Starting attendance sync...
+2025-12-05 15:17:44,150 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:17:49,156 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:17:49,157 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:22:49,157 [INFO] Starting attendance sync...
+2025-12-05 15:22:49,158 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:22:54,163 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:22:54,164 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:27:54,164 [INFO] Starting attendance sync...
+2025-12-05 15:27:54,165 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:27:59,170 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:27:59,171 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:32:59,171 [INFO] Starting attendance sync...
+2025-12-05 15:32:59,172 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:33:04,177 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:33:04,179 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:38:04,179 [INFO] Starting attendance sync...
+2025-12-05 15:38:04,179 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:38:09,185 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:38:09,186 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:43:09,186 [INFO] Starting attendance sync...
+2025-12-05 15:43:09,187 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:43:14,192 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:43:14,193 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:48:14,193 [INFO] Starting attendance sync...
+2025-12-05 15:48:14,194 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:48:19,199 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:48:19,200 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:53:19,201 [INFO] Starting attendance sync...
+2025-12-05 15:53:19,201 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:53:24,207 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:53:24,208 [INFO] Next sync in 5.0 minutes...
+2025-12-05 15:58:24,208 [INFO] Starting attendance sync...
+2025-12-05 15:58:24,208 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 15:58:29,214 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 15:58:29,215 [INFO] Next sync in 5.0 minutes...
+2025-12-05 16:03:29,216 [INFO] Starting attendance sync...
+2025-12-05 16:03:29,216 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 16:03:34,222 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 16:03:34,223 [INFO] Next sync in 5.0 minutes...
+2025-12-05 16:08:34,223 [INFO] Starting attendance sync...
+2025-12-05 16:08:34,223 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 16:08:39,226 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 16:08:39,227 [INFO] Next sync in 5.0 minutes...
+2025-12-05 16:13:39,227 [INFO] Starting attendance sync...
+2025-12-05 16:13:39,227 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 16:13:44,231 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 16:13:44,232 [INFO] Next sync in 5.0 minutes...
+2025-12-05 16:18:44,233 [INFO] Starting attendance sync...
+2025-12-05 16:18:44,233 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 16:18:49,239 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 16:18:49,240 [INFO] Next sync in 5.0 minutes...
+2025-12-05 16:23:49,240 [INFO] Starting attendance sync...
+2025-12-05 16:23:49,241 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 16:23:54,246 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 16:23:54,247 [INFO] Next sync in 5.0 minutes...
+2025-12-05 16:28:54,247 [INFO] Starting attendance sync...
+2025-12-05 16:28:54,247 [INFO] Attempting to connect to device 172.16.1.207:4370
+2025-12-05 16:28:59,254 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zkteco.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/zk_env/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2025-12-05 16:28:59,255 [INFO] Next sync in 5.0 minutes...
