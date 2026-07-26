@@ -1,0 +1,26 @@
+{
+  "source": "edan_se1200",
+  "device_no": "1871844",
+  "filename": "20260402_212722_20251219-214725-99662.scp",
+  "timestamp": "2026-04-02T21:27:23.424513",
+  "hl7": "MSH|^~\\&|EDAN_ECG|SE1200|LIS|HOSPITAL|20260402212723||ORU^R01|20260402212723|P|2.5\rPID|1||UNKNOWN^^^HOSP||UNKNOWN|||\rOBR|1||20260402212723|93000^Electrocardiogram^CPT|||20260402212723\rOBX|1|ST|93000^ECG^CPT||||||||F\rOBX|2|NM|HR^HeartRate^LOCAL|||bpm|||||F\rOBX|3|ST|DX^AutoDiagnosis^LOCAL||||||||F\rOBX|4|ST|FILE^SourceFile^LOCAL||20260402_212722_20251219-214725-99662.scp||||||F\r",
+  "parsed": {},
+  "patient": {
+    "id": null,
+    "name": null,
+    "first_name": null,
+    "last_name": null,
+    "dob": null,
+    "age": null,
+    "sex": null,
+    "weight": null,
+    "height": null,
+    "room": null,
+    "hospital": null,
+    "department": null,
+    "referring_physician": null,
+    "diagnosis_doctor": null,
+    "technician": null
+  },
+  "leads": []
+}

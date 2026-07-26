@@ -1,0 +1,41 @@
+════════════════════════════════════════════════════════════════
+  ECG REPORT  —  20260402_215622_20251222-104744-pataleo mmasi.scp
+  Parsed     : 2026-04-02T18:56:23.428870Z
+════════════════════════════════════════════════════════════════
+
+── RECORDING ───────────────────────────────────────────────────
+  Date/Time  : 2025-12-22T10:47:44
+  Device     : Edan SE-1200 Express
+  Sample Rate: 500 Hz
+  Leads      : 12
+  Duration   : None sec
+
+── PATIENT ─────────────────────────────────────────────────────
+  Name                     : Pataleo Mmasi
+  First Name               : Pataleo
+  Last Name                : Mmasi
+
+── MEASUREMENTS ────────────────────────────────────────────────
+
+── INTERPRETATION ──────────────────────────────────────────────
+
+── AUTO DIAGNOSIS ──────────────────────────────────────────────
+  → Measurements not available — clinical review required
+
+── LEADS ───────────────────────────────────────────────────────
+  I     :      0 samples
+  II    :      0 samples
+  III   :      0 samples
+  aVR   :      0 samples
+  aVL   :      0 samples
+  aVF   :      0 samples
+  V1    :      0 samples
+  V2    :      0 samples
+  V3    :      0 samples
+  V4    :      0 samples
+  V5    :      0 samples
+  V6    :      0 samples
+
+════════════════════════════════════════════════════════════════
+  File size  : 82,128 bytes
+════════════════════════════════════════════════════════════════

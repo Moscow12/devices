@@ -1,0 +1,8 @@
+{
+  "mode": "serial",
+  "port": "/dev/ttyUSB0",
+  "baud": "9600",
+  "ip": "127.0.0.1",
+  "tcp_port": "5000",
+  "url": "http://127.0.0.1:8000/api/hl7/receive"
+}

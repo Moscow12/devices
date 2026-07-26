@@ -1,0 +1,37 @@
+# Core Dependencies
+pyserial>=3.5
+requests>=2.31.0
+pyyaml>=6.0.1
+python-dotenv>=1.0.0
+
+# Database & ORM
+peewee>=3.17.0
+
+# Retry & Resilience
+tenacity>=8.2.3
+
+# Logging
+structlog>=24.1.0
+colorama>=0.4.6
+
+# Data Validation
+pydantic>=2.5.0
+pydantic-settings>=2.1.0
+
+# Encryption
+cryptography>=42.0.0
+
+# Windows Service Support (Windows only)
+pywin32>=306; sys_platform == 'win32'
+
+# Optional: WebSocket support
+websocket-client>=1.7.0
+
+# Optional: Modbus support
+pymodbus>=3.6.0
+
+# Development Dependencies
+pytest>=7.4.0
+pytest-cov>=4.1.0
+black>=23.12.0
+flake8>=7.0.0

@@ -1,0 +1,22 @@
+2026-06-09 17:17:11,922 [INFO] Starting attendance sync...
+2026-06-09 17:17:11,922 [INFO] Attempting to connect to device (id=100) at 192.168.0.201:4370 using a password.
+2026-06-09 17:17:15,018 [ERROR] Failed to connect/sync with device 192.168.0.201:4370: can't reach device (ping 192.168.0.201)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/attendance/zkteco.py", line 111, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/attendance/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 192.168.0.201)
+2026-06-09 17:17:15,020 [INFO] Next sync in 5.0 minutes...
+2026-06-09 17:21:40,323 [INFO] Starting attendance sync...
+2026-06-09 17:21:40,323 [INFO] Attempting to connect to device (id=100) at 192.168.0.201:4370 using a password.
+2026-06-09 17:21:43,434 [ERROR] Failed to connect/sync with device 192.168.0.201:4370: can't reach device (ping 192.168.0.201)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/attendance/zkteco.py", line 111, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/attendance/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 192.168.0.201)
+2026-06-09 17:21:43,437 [INFO] Next sync in 5.0 minutes...

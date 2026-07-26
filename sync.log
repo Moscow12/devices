@@ -503,3 +503,124 @@ Traceback (most recent call last):
     raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
 zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
 2025-12-05 16:28:59,255 [INFO] Next sync in 5.0 minutes...
+2026-06-09 17:35:55,237 [INFO] Starting attendance sync...
+2026-06-09 17:35:55,238 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 17:36:00,245 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 17:36:00,246 [INFO] Next sync in 5.0 minutes...
+2026-06-09 17:41:00,247 [INFO] Starting attendance sync...
+2026-06-09 17:41:00,247 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 17:41:05,253 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 17:41:05,254 [INFO] Next sync in 5.0 minutes...
+2026-06-09 17:46:05,255 [INFO] Starting attendance sync...
+2026-06-09 17:46:05,255 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 17:46:10,261 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 17:46:10,262 [INFO] Next sync in 5.0 minutes...
+2026-06-09 17:51:10,262 [INFO] Starting attendance sync...
+2026-06-09 17:51:10,263 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 17:51:15,269 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 17:51:15,270 [INFO] Next sync in 5.0 minutes...
+2026-06-09 17:56:15,270 [INFO] Starting attendance sync...
+2026-06-09 17:56:15,270 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 17:56:20,276 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 17:56:20,277 [INFO] Next sync in 5.0 minutes...
+2026-06-09 18:01:20,277 [INFO] Starting attendance sync...
+2026-06-09 18:01:20,277 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 18:01:25,283 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 18:01:25,284 [INFO] Next sync in 5.0 minutes...
+2026-06-09 18:06:25,284 [INFO] Starting attendance sync...
+2026-06-09 18:06:25,285 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 18:06:30,291 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 18:06:30,292 [INFO] Next sync in 5.0 minutes...
+2026-06-09 18:11:30,292 [INFO] Starting attendance sync...
+2026-06-09 18:11:30,293 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 18:11:35,298 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 18:11:35,299 [INFO] Next sync in 5.0 minutes...
+2026-06-09 18:16:35,300 [INFO] Starting attendance sync...
+2026-06-09 18:16:35,300 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 18:16:35,305 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 18:16:35,306 [INFO] Next sync in 5.0 minutes...
+2026-06-09 18:21:35,306 [INFO] Starting attendance sync...
+2026-06-09 18:21:35,306 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-09 18:21:35,312 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-09 18:21:35,312 [INFO] Next sync in 5.0 minutes...
+2026-06-10 07:46:40,059 [INFO] Starting attendance sync...
+2026-06-10 07:46:40,059 [INFO] Attempting to connect to device 172.16.1.207:4370
+2026-06-10 07:46:45,064 [ERROR] Error during sync: can't reach device (ping 172.16.1.207)
+Traceback (most recent call last):
+  File "/home/moscow/Desktop/PY/zktecodemo.py", line 47, in sync_attendance
+    conn = zk.connect()
+           ^^^^^^^^^^^^
+  File "/home/moscow/Desktop/PY/venv/lib/python3.12/site-packages/zk/base.py", line 367, in connect
+    raise ZKNetworkError("can't reach device (ping %s)" % self.__address[0])
+zk.exception.ZKNetworkError: can't reach device (ping 172.16.1.207)
+2026-06-10 07:46:45,065 [INFO] Next sync in 5.0 minutes...

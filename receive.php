@@ -79,3 +79,4 @@ if ($countErrors != 0) {
 }
 
 mysqli_close($conn);
+?>

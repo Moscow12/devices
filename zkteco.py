@@ -8,7 +8,7 @@ import requests
 # ===================== CONFIG =====================
 DEVICE_IP = "172.16.1.207"
 DEVICE_PORT = 4370
-LARAVEL_API_URL = "http://10.64.11.11/webs/admin/api/receive.php"
+LARAVEL_API_URL = "https://hrp.stjosephhospitalmoshi.or.tz/api/attendance/receive"
 LAST_SYNC_FILE = "last_sync.txt"
 LOG_FILE = "sync.log"
 SYNC_INTERVAL = 300  # 1 hour in seconds
@@ -26,8 +26,8 @@ def get_last_sync_time():
     if not os.path.exists(LAST_SYNC_FILE):
         logging.warning("last_sync.txt not found. Creating with default old date.")
         with open(LAST_SYNC_FILE, "w") as f:
-            f.write("2025-08-12 00:00:00")
-        return datetime(2025, 1, 1, 0, 0, 0)
+            f.write("2026-06-01 00:00:00")
+        return datetime(2026, 1, 1, 0, 0, 0)
 
     with open(LAST_SYNC_FILE, "r") as f:
         return datetime.strptime(f.read().strip(), "%Y-%m-%d %H:%M:%S")

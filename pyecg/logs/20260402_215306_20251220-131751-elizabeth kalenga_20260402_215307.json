@@ -1,0 +1,245 @@
+{
+  "source": "edan_se1200",
+  "device_no": "1871844",
+  "filename": "20260402_215306_20251220-131751-elizabeth kalenga.scp",
+  "timestamp": "2026-04-02T21:53:07.031065",
+  "hl7": "MSH|^~\\&|EDAN_ECG|SE1200|LIS|HOSPITAL|20260402215307||ORU^R01|20260402215307|P|2.5\rPID|1||UNKNOWN^^^HOSP||Elizabeth Kalenga|||\rOBR|1||20260402215307|93000^Electrocardiogram^CPT|||20260402215307\rOBX|1|ST|93000^ECG^CPT||Measurements not available in this file||||||F\rOBX|2|NM|HR^HeartRate^LOCAL||None|bpm|||||F\rOBX|3|ST|DX^AutoDiagnosis^LOCAL||Measurements not available \u2014 clinical review required||||||F\rOBX|4|ST|FILE^SourceFile^LOCAL||20260402_215306_20251220-131751-elizabeth kalenga.scp||||||F\r",
+  "parsed": {
+    "file": {
+      "name": "20260402_215306_20251220-131751-elizabeth kalenga.scp",
+      "size_bytes": 82103,
+      "parsed_at": "2026-04-02T18:53:07.003640Z",
+      "format": "SCP-ECG (Edan SE-1200)"
+    },
+    "patient": {
+      "id": null,
+      "name": "Elizabeth Kalenga",
+      "first_name": "Elizabeth",
+      "last_name": "Kalenga",
+      "dob": null,
+      "age": null,
+      "sex": null,
+      "weight": null,
+      "height": null,
+      "room": null,
+      "hospital": null,
+      "department": null,
+      "referring_physician": null,
+      "diagnosis_doctor": null,
+      "technician": null
+    },
+    "recording": {
+      "date": "2025-12-20",
+      "time": "13:17:51",
+      "datetime": "2025-12-20T13:17:51",
+      "device": "Edan SE-1200 Express",
+      "sample_rate_hz": 500,
+      "num_leads": 12,
+      "duration_sec": null,
+      "amplitude_resolution_nv": null
+    },
+    "measurements": {
+      "heart_rate": {
+        "value": null,
+        "unit": "bpm",
+        "interp": null
+      },
+      "atrial_rate": {
+        "value": null,
+        "unit": "bpm"
+      },
+      "intervals": {
+        "p_duration_ms": null,
+        "pr_ms": null,
+        "qrs_ms": null,
+        "qt_ms": null,
+        "qtc_ms": null,
+        "qtc_interpretation": null
+      },
+      "axes": {
+        "p_degrees": null,
+        "qrs_degrees": null,
+        "qrs_interp": null,
+        "t_degrees": null
+      }
+    },
+    "leads": [
+      {
+        "id": 0,
+        "name": "I",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 1,
+        "name": "II",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 2,
+        "name": "III",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 3,
+        "name": "aVR",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 4,
+        "name": "aVL",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 5,
+        "name": "aVF",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 6,
+        "name": "V1",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 7,
+        "name": "V2",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 8,
+        "name": "V3",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 9,
+        "name": "V4",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 10,
+        "name": "V5",
+        "num_samples": 0,
+        "duration_ms": null
+      },
+      {
+        "id": 11,
+        "name": "V6",
+        "num_samples": 0,
+        "duration_ms": null
+      }
+    ],
+    "diagnosis": {
+      "clinical_summary": null,
+      "free_text": null,
+      "auto_diagnosis": [
+        "Measurements not available \u2014 clinical review required"
+      ]
+    },
+    "interpretation": {
+      "findings": [],
+      "flags": [],
+      "normal": false,
+      "summary": "Measurements not available in this file"
+    }
+  },
+  "patient": {
+    "id": null,
+    "name": "Elizabeth Kalenga",
+    "first_name": "Elizabeth",
+    "last_name": "Kalenga",
+    "dob": null,
+    "age": null,
+    "sex": null,
+    "weight": null,
+    "height": null,
+    "room": null,
+    "hospital": null,
+    "department": null,
+    "referring_physician": null,
+    "diagnosis_doctor": null,
+    "technician": null
+  },
+  "leads": [
+    {
+      "id": 0,
+      "name": "I",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 1,
+      "name": "II",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 2,
+      "name": "III",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 3,
+      "name": "aVR",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 4,
+      "name": "aVL",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 5,
+      "name": "aVF",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 6,
+      "name": "V1",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 7,
+      "name": "V2",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 8,
+      "name": "V3",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 9,
+      "name": "V4",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 10,
+      "name": "V5",
+      "num_samples": 0,
+      "duration_ms": null
+    },
+    {
+      "id": 11,
+      "name": "V6",
+      "num_samples": 0,
+      "duration_ms": null
+    }
+  ]
+}
