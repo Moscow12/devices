@@ -7,20 +7,33 @@ import threading
 import requests
 import json
 import os
-import logging
 from datetime import datetime
 
 SAVE_DIR = 'logs'
 CONFIG_FILE = 'liscom_config.json'
-EVENT_LOG_FILE = os.path.join(SAVE_DIR, 'events.log')
+DATA_LOG_FILE = os.path.join(SAVE_DIR, 'machine_data.log')
+SENT_LOG_FILE = os.path.join(SAVE_DIR, 'sent_data.log')
+RESPONSE_LOG_FILE = os.path.join(SAVE_DIR, 'api_responses.log')
 
 os.makedirs(SAVE_DIR, exist_ok=True)
 
-logger = logging.getLogger('liscom')
-logger.setLevel(logging.DEBUG)
-_file_handler = logging.FileHandler(EVENT_LOG_FILE, encoding='utf-8')
-_file_handler.setFormatter(logging.Formatter('%(asctime)s [%(levelname)s] %(message)s'))
-logger.addHandler(_file_handler)
+
+def _append_log(path, source, data):
+    timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+    with open(path, 'a', encoding='utf-8') as f:
+        f.write(f"[{timestamp}] [{source}] {data}\n")
+
+
+def log_machine_data(source, data):
+    _append_log(DATA_LOG_FILE, source, data)
+
+
+def log_sent_data(data):
+    _append_log(SENT_LOG_FILE, "SENT", data)
+
+
+def log_api_response(status_code, body):
+    _append_log(RESPONSE_LOG_FILE, "RESPONSE", f"Status {status_code}: {body}")
 
 # Color scheme (matching lis.py)
 COLORS = {
@@ -343,7 +356,6 @@ class SerialTcpApp:
         self.external_url = url
         self.running = True
         self.connection_counter = 0
-        logger.info(f"Start listening requested: mode={mode}, url={url}")
 
         # Update UI
         self.start_button.config(state='disabled')
@@ -359,19 +371,48 @@ class SerialTcpApp:
             port = self.port_combobox.get()
             baud = int(self.baud_entry.get())
 
+            available = [p.device for p in serial.tools.list_ports.comports()]
+            if port not in available:
+                self.refresh_ports()
+                port = self.port_combobox.get()
+                if port:
+                    self.update_text(self.received_text, f"Port changed, now using {port}")
+
             if not port:
                 raise ValueError("No serial port selected")
 
+            self.serial_baud = baud
             self.serial_port = serial.Serial(port, baud, timeout=1)
-            logger.info(f"Serial port opened: {port}@{baud}")
             self.status_label.config(text=f"● Serial Active - {port}@{baud}", fg=COLORS['success'])
             self.update_text(self.received_text, f"Listening on serial port {port} at {baud} baud...")
 
             threading.Thread(target=self.read_serial, daemon=True).start()
         except Exception as e:
-            logger.exception("Failed to open serial port")
             messagebox.showerror("Serial Error", str(e))
             self.stop_listening()
+
+    def reopen_serial_port(self):
+        available = [p.device for p in serial.tools.list_ports.comports()]
+        current = self.port_combobox.get()
+        port = current if current in available else (available[0] if available else None)
+
+        if not port:
+            return False
+
+        try:
+            if self.serial_port:
+                try:
+                    self.serial_port.close()
+                except Exception:
+                    pass
+            self.serial_port = serial.Serial(port, self.serial_baud, timeout=1)
+            self.port_combobox.set(port)
+            self.port_status.config(text=f"Detected: {port}", fg=COLORS['success'])
+            self.status_label.config(text=f"● Serial Active - {port}@{self.serial_baud}", fg=COLORS['success'])
+            self.update_text(self.received_text, f"Reconnected on serial port {port}")
+            return True
+        except Exception:
+            return False
 
     def start_tcp(self):
         ip = self.ip_entry.get()
@@ -382,28 +423,24 @@ class SerialTcpApp:
             self.stop_listening()
             return
 
-        logger.info(f"TCP server starting on {ip}:{port}")
         self.status_label.config(text=f"● TCP Active - {ip}:{port}", fg=COLORS['success'])
         self.update_text(self.received_text, f"Listening on TCP {ip}:{port}...")
 
         threading.Thread(target=self.run_tcp_server, args=(ip, port), daemon=True).start()
 
     def stop_listening(self):
-        logger.info("Stop listening requested")
         self.running = False
 
         # Close serial port
         if self.serial_port and self.serial_port.is_open:
             self.serial_port.close()
-            logger.info("Serial port closed")
 
         # Close TCP socket
         if self.server_socket:
             try:
                 self.server_socket.close()
-                logger.info("TCP server socket closed")
             except Exception:
-                logger.exception("Error closing TCP server socket")
+                pass
 
         # Update UI
         self.start_button.config(state='normal')
@@ -412,29 +449,28 @@ class SerialTcpApp:
         self.update_text(self.received_text, "Stopped listening.")
 
     def read_serial(self):
-        logger.info("Serial read loop started")
         while self.running:
             try:
-                waiting = self.serial_port.in_waiting
-                if waiting:
-                    logger.debug(f"Serial in_waiting={waiting} bytes")
+                if self.serial_port.in_waiting:
                     raw = self.serial_port.readline()
-                    logger.debug(f"Serial raw bytes: {raw!r}")
                     data = raw.decode(errors='ignore').strip()
                     if data:
-                        logger.info(f"Serial data received: {data!r}")
+                        log_machine_data("Serial", data)
                         self.update_text(self.received_text, f"Serial: {data}")
                         self.forward_data(data)
                         self.connection_counter += 1
                         self.connection_count.config(text=f"Messages: {self.connection_counter}")
-                    else:
-                        logger.warning(f"Serial bytes arrived but decoded to empty string: {raw!r}")
+            except (serial.SerialException, OSError) as e:
+                if not self.running:
+                    break
+                self.update_text(self.received_text, f"Serial port disconnected ({e}), reconnecting...")
+                self.status_label.config(text="● Reconnecting...", fg=COLORS['warning'])
+                while self.running and not self.reopen_serial_port():
+                    threading.Event().wait(2)
             except Exception as e:
-                logger.exception("Serial read error")
                 if self.running:
                     self.update_text(self.received_text, f"Serial error: {e}")
                 break
-        logger.info("Serial read loop stopped")
 
     def run_tcp_server(self, host, port):
         self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -443,9 +479,7 @@ class SerialTcpApp:
         try:
             self.server_socket.bind((host, port))
             self.server_socket.listen()
-            logger.info(f"TCP server listening on {host}:{port}")
         except Exception as e:
-            logger.exception("Error binding TCP socket")
             self.update_text(self.received_text, f"Error binding socket: {str(e)}")
             self.running = False
             self.start_button.config(state='normal')
@@ -457,18 +491,15 @@ class SerialTcpApp:
             try:
                 self.server_socket.settimeout(1.0)
                 client_socket, addr = self.server_socket.accept()
-                logger.info(f"TCP connection accepted from {addr}")
                 self.connection_counter += 1
                 self.connection_count.config(text=f"Connections: {self.connection_counter}")
                 threading.Thread(target=self.handle_tcp_client, args=(client_socket, addr), daemon=True).start()
             except socket.timeout:
                 continue
             except Exception as e:
-                logger.exception("TCP server error")
                 if self.running:
                     self.update_text(self.received_text, f"Server error: {str(e)}")
                 break
-        logger.info("TCP server loop stopped")
 
     def handle_tcp_client(self, conn, addr):
         with conn:
@@ -478,6 +509,7 @@ class SerialTcpApp:
                     return
 
                 received_data = data.decode('utf-8', errors='ignore')
+                log_machine_data(f"TCP {addr}", received_data)
                 self.update_text(self.received_text, f"From {addr}: {received_data}")
                 self.forward_data(received_data)
             except Exception as e:
@@ -488,32 +520,17 @@ class SerialTcpApp:
         json_data = {"data": data}
         formatted_json = json.dumps(json_data, indent=2)
         self.update_text(self.sent_text, formatted_json)
-
-        # Save to file
-        timestamp = datetime.now().strftime('%Y%m%d_%H%M%S_%f')
-        filename = os.path.join(SAVE_DIR, f"sent_{timestamp}.json")
-        try:
-            with open(filename, 'w', encoding='utf-8') as f:
-                json.dump(json_data, f, indent=2)
-        except Exception as e:
-            print(f"Error saving file: {e}")
+        log_sent_data(formatted_json)
 
         # Send to external API
         try:
             headers = {'Content-Type': 'application/json'}
             response = requests.post(self.external_url, json=json_data, headers=headers, timeout=5)
             result = f"Status: {response.status_code}\n{response.text}"
-
-            # Save response
-            response_file = os.path.join(SAVE_DIR, f"response_{timestamp}.json")
-            try:
-                with open(response_file, 'w', encoding='utf-8') as f:
-                    f.write(response.text)
-            except:
-                pass
-
+            log_api_response(response.status_code, response.text)
         except Exception as e:
             result = f"API Error: {str(e)}"
+            log_api_response("ERROR", str(e))
 
         self.update_text(self.response_text, result)
 

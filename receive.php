@@ -79,4 +79,7 @@ if ($countErrors != 0) {
 }
 
 mysqli_close($conn);
+
+
+// !timeout 20 cat /dev/ttyUSB0 | xxd
 ?>
