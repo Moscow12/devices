@@ -17,23 +17,26 @@ RESPONSE_LOG_FILE = os.path.join(SAVE_DIR, 'api_responses.log')
 
 os.makedirs(SAVE_DIR, exist_ok=True)
 
+_log_lock = threading.Lock()
+
 
 def _append_log(path, source, data):
     timestamp = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
-    with open(path, 'a', encoding='utf-8') as f:
-        f.write(f"[{timestamp}] [{source}] {data}\n")
+    with _log_lock:
+        with open(path, 'a', encoding='utf-8') as f:
+            f.write(f"[{timestamp}] [{source}] {data}\n")
 
 
 def log_machine_data(source, data):
     _append_log(DATA_LOG_FILE, source, data)
 
 
-def log_sent_data(data):
-    _append_log(SENT_LOG_FILE, "SENT", data)
+def log_sent_data(source, data):
+    _append_log(SENT_LOG_FILE, f"SENT {source}", data)
 
 
-def log_api_response(status_code, body):
-    _append_log(RESPONSE_LOG_FILE, "RESPONSE", f"Status {status_code}: {body}")
+def log_api_response(source, status_code, body):
+    _append_log(RESPONSE_LOG_FILE, f"RESPONSE {source}", f"Status {status_code}: {body}")
 
 # Color scheme (matching lis.py)
 COLORS = {
@@ -54,14 +57,21 @@ COLORS = {
 class SerialTcpApp:
     def __init__(self, root):
         self.root = root
-        self.root.title("TS-LISA")
+        self.root.title("TS - LIS")
         self.root.configure(bg=COLORS['bg'])
         self.root.geometry("1200x900")
 
         self.serial_port = None
+        self.serial_port_name = None
+        self.serial_baud = None
         self.server_socket = None
         self.running = False
-        self.connection_counter = 0
+        self.serial_active = False
+        self.tcp_active = False
+        self.serial_count = 0
+        self.tcp_count = 0
+        self.counter_lock = threading.Lock()
+        self.external_url = ''
         os.makedirs(SAVE_DIR, exist_ok=True)
 
         # Configure style
@@ -70,14 +80,11 @@ class SerialTcpApp:
         # Status bar
         self.create_status_bar()
 
-        # Mode selection
-        self.create_mode_selector()
-
-        # Configuration frames (will be shown/hidden based on mode)
+        # Configuration frames (both channels can run at the same time)
         self.create_serial_config()
         self.create_tcp_config()
 
-        # API URL (common for both modes)
+        # API URL (common for both channels)
         self.create_api_config()
 
         # Control buttons
@@ -91,54 +98,63 @@ class SerialTcpApp:
         # Initial setup
         self.refresh_ports()
         self.load_config()
-        self.toggle_mode()
+
+        self.root.protocol("WM_DELETE_WINDOW", self.on_close)
 
     def setup_styles(self):
         style = ttk.Style()
         style.theme_use('clam')
 
+    # ------------------------------------------------------------------ UI helpers
+
+    def run_on_ui(self, func, *args, **kwargs):
+        """Run func on the Tk main thread (Tk widgets are not thread-safe)."""
+        if threading.current_thread() is threading.main_thread():
+            func(*args, **kwargs)
+        else:
+            self.root.after(0, lambda: func(*args, **kwargs))
+
+    def set_label(self, label, text, color):
+        self.run_on_ui(label.config, text=text, fg=color)
+
     def create_status_bar(self):
         self.status_bar = tk.Frame(self.root, bg=COLORS['panel'], relief='flat', bd=0)
         self.status_bar.pack(side='bottom', fill='x')
 
-        self.status_label = tk.Label(self.status_bar, text="● Offline", bg=COLORS['panel'],
-                                     fg=COLORS['error'], font=('Arial', 9, 'bold'), anchor='w')
-        self.status_label.pack(side='left', padx=10, pady=5)
+        self.serial_status_label = tk.Label(self.status_bar, text="Serial: ● Offline", bg=COLORS['panel'],
+                                            fg=COLORS['error'], font=('Arial', 9, 'bold'), anchor='w')
+        self.serial_status_label.pack(side='left', padx=10, pady=5)
 
-        self.connection_count = tk.Label(self.status_bar, text="Connections: 0", bg=COLORS['panel'],
-                                        fg=COLORS['fg'], font=('Arial', 9), anchor='e')
+        self.tcp_status_label = tk.Label(self.status_bar, text="TCP: ● Offline", bg=COLORS['panel'],
+                                         fg=COLORS['error'], font=('Arial', 9, 'bold'), anchor='w')
+        self.tcp_status_label.pack(side='left', padx=10, pady=5)
+
+        self.connection_count = tk.Label(self.status_bar, text="Serial messages: 0 | TCP connections: 0",
+                                         bg=COLORS['panel'], fg=COLORS['fg'], font=('Arial', 9), anchor='e')
         self.connection_count.pack(side='right', padx=10, pady=5)
 
-    def create_mode_selector(self):
-        self.mode_frame = tk.Frame(self.root, bg=COLORS['bg'])
-        self.mode_frame.pack(pady=10, padx=10, fill='x')
+    def update_counts(self):
+        with self.counter_lock:
+            text = f"Serial messages: {self.serial_count} | TCP connections: {self.tcp_count}"
+        self.run_on_ui(self.connection_count.config, text=text)
 
-        tk.Label(self.mode_frame, text="Mode:", bg=COLORS['bg'], fg=COLORS['accent'],
-                font=('Arial', 11, 'bold')).pack(side='left', padx=(0, 10))
-
-        self.mode_var = tk.StringVar(value="serial")
-
-        serial_radio = tk.Radiobutton(self.mode_frame, text="📡 Serial Port", variable=self.mode_var,
-                                     value="serial", command=self.toggle_mode,
-                                     bg=COLORS['bg'], fg=COLORS['fg'], selectcolor=COLORS['panel'],
-                                     font=('Arial', 10), activebackground=COLORS['bg'],
-                                     activeforeground=COLORS['accent'], cursor='hand2')
-        serial_radio.pack(side='left', padx=5)
-
-        tcp_radio = tk.Radiobutton(self.mode_frame, text="🌐 TCP Socket", variable=self.mode_var,
-                                  value="tcp", command=self.toggle_mode,
-                                  bg=COLORS['bg'], fg=COLORS['fg'], selectcolor=COLORS['panel'],
-                                  font=('Arial', 10), activebackground=COLORS['bg'],
-                                  activeforeground=COLORS['accent'], cursor='hand2')
-        tcp_radio.pack(side='left', padx=5)
+    def create_checkbox(self, parent, text, variable):
+        return tk.Checkbutton(parent, text=text, variable=variable,
+                              bg=COLORS['bg'], fg=COLORS['fg'], selectcolor=COLORS['panel'],
+                              font=('Arial', 10, 'bold'), activebackground=COLORS['bg'],
+                              activeforeground=COLORS['accent'], cursor='hand2')
 
     def create_serial_config(self):
         self.serial_frame = tk.Frame(self.root, bg=COLORS['bg'])
         self.serial_frame.pack(pady=5, padx=10, fill='x')
 
-        # Row 1: Port selection
         row1 = tk.Frame(self.serial_frame, bg=COLORS['bg'])
         row1.pack(fill='x', pady=5)
+
+        self.serial_enabled = tk.BooleanVar(value=True)
+        self.serial_check = self.create_checkbox(row1, "📡 Serial", self.serial_enabled)
+        self.serial_check.config(width=10, anchor='w')
+        self.serial_check.pack(side='left', padx=(0, 10))
 
         tk.Label(row1, text="Port:", bg=COLORS['bg'], fg=COLORS['fg'],
                 font=('Arial', 10, 'bold')).pack(side='left', padx=(0, 5))
@@ -169,9 +185,13 @@ class SerialTcpApp:
         self.tcp_frame = tk.Frame(self.root, bg=COLORS['bg'])
         self.tcp_frame.pack(pady=5, padx=10, fill='x')
 
-        # Row 1: IP and Port
         row1 = tk.Frame(self.tcp_frame, bg=COLORS['bg'])
         row1.pack(fill='x', pady=5)
+
+        self.tcp_enabled = tk.BooleanVar(value=True)
+        self.tcp_check = self.create_checkbox(row1, "🌐 TCP", self.tcp_enabled)
+        self.tcp_check.config(width=10, anchor='w')
+        self.tcp_check.pack(side='left', padx=(0, 10))
 
         tk.Label(row1, text="IP:", bg=COLORS['bg'], fg=COLORS['fg'],
                 font=('Arial', 10, 'bold')).pack(side='left', padx=(0, 5))
@@ -226,21 +246,30 @@ class SerialTcpApp:
         save_config_button.bind('<Enter>', lambda e: save_config_button.config(bg='#b4befe'))
         save_config_button.bind('<Leave>', lambda e: save_config_button.config(bg=COLORS['accent']))
 
-    def save_config(self):
-        config = {
-            'mode': self.mode_var.get(),
+    # ------------------------------------------------------------------ configuration
+
+    def get_config(self):
+        return {
+            'serial_enabled': self.serial_enabled.get(),
+            'tcp_enabled': self.tcp_enabled.get(),
             'port': self.port_combobox.get(),
             'baud': self.baud_entry.get(),
             'ip': self.ip_entry.get(),
             'tcp_port': self.tcp_port_entry.get(),
             'url': self.url_entry.get(),
         }
+
+    def save_config(self, silent=False):
         try:
             with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
-                json.dump(config, f, indent=2)
-            messagebox.showinfo("Configuration Saved", f"Configuration saved to {CONFIG_FILE}")
+                json.dump(self.get_config(), f, indent=2)
+            if not silent:
+                messagebox.showinfo("Configuration Saved", f"Configuration saved to {CONFIG_FILE}")
         except Exception as e:
-            messagebox.showerror("Save Error", f"Failed to save configuration: {e}")
+            if silent:
+                print(f"Error saving config: {e}")
+            else:
+                messagebox.showerror("Save Error", f"Failed to save configuration: {e}")
 
     def load_config(self):
         if not os.path.exists(CONFIG_FILE):
@@ -252,31 +281,26 @@ class SerialTcpApp:
             print(f"Error loading config: {e}")
             return
 
-        self.mode_var.set(config.get('mode', self.mode_var.get()))
+        if 'serial_enabled' in config or 'tcp_enabled' in config:
+            self.serial_enabled.set(bool(config.get('serial_enabled', True)))
+            self.tcp_enabled.set(bool(config.get('tcp_enabled', True)))
+        elif 'mode' in config:
+            # Backward compatibility with the old single-mode config
+            self.serial_enabled.set(config['mode'] == 'serial')
+            self.tcp_enabled.set(config['mode'] == 'tcp')
 
         port = config.get('port', '')
         if port:
             self.port_combobox.set(port)
 
-        baud = config.get('baud')
-        if baud:
-            self.baud_entry.delete(0, tk.END)
-            self.baud_entry.insert(0, baud)
+        for entry, key in ((self.baud_entry, 'baud'), (self.ip_entry, 'ip'),
+                           (self.tcp_port_entry, 'tcp_port'), (self.url_entry, 'url')):
+            value = config.get(key)
+            if value:
+                entry.delete(0, tk.END)
+                entry.insert(0, value)
 
-        ip = config.get('ip')
-        if ip:
-            self.ip_entry.delete(0, tk.END)
-            self.ip_entry.insert(0, ip)
-
-        tcp_port = config.get('tcp_port')
-        if tcp_port:
-            self.tcp_port_entry.delete(0, tk.END)
-            self.tcp_port_entry.insert(0, tcp_port)
-
-        url = config.get('url')
-        if url:
-            self.url_entry.delete(0, tk.END)
-            self.url_entry.insert(0, url)
+    # ------------------------------------------------------------------ text areas
 
     def create_frame(self, title):
         container = tk.Frame(self.root, bg=COLORS['bg'])
@@ -316,55 +340,68 @@ class SerialTcpApp:
         widget.delete(1.0, tk.END)
         widget.config(state=tk.DISABLED)
 
-    def update_text(self, widget, content):
+    def _insert_text(self, widget, content):
         widget.config(state=tk.NORMAL)
         widget.insert(tk.END, content + "\n")
         widget.see(tk.END)
         widget.config(state=tk.DISABLED)
 
-    def toggle_mode(self):
-        mode = self.mode_var.get()
-        if mode == "serial":
-            self.serial_frame.pack(pady=5, padx=10, fill='x', after=self.mode_frame)
-            self.tcp_frame.pack_forget()
-        else:
-            self.tcp_frame.pack(pady=5, padx=10, fill='x', after=self.mode_frame)
-            self.serial_frame.pack_forget()
+    def update_text(self, widget, content):
+        self.run_on_ui(self._insert_text, widget, content)
 
     def refresh_ports(self):
         ports = [port.device for port in serial.tools.list_ports.comports()]
         self.port_combobox['values'] = ports
+        current = self.port_combobox.get()
         if ports:
-            self.port_combobox.set(ports[0])
-            self.port_status.config(text=f"Detected: {ports[0]}", fg=COLORS['success'])
+            if current not in ports:
+                self.port_combobox.set(ports[0])
+            self.port_status.config(text=f"Detected: {self.port_combobox.get()}", fg=COLORS['success'])
         else:
             self.port_combobox.set('')
             self.port_status.config(text="No serial ports detected", fg=COLORS['error'])
+
+    # ------------------------------------------------------------------ start / stop
 
     def start_listening(self):
         if self.running:
             messagebox.showinfo("Already Running", "Listener is already active.")
             return
 
-        mode = self.mode_var.get()
-        url = self.url_entry.get()
+        use_serial = self.serial_enabled.get()
+        use_tcp = self.tcp_enabled.get()
+        if not (use_serial or use_tcp):
+            messagebox.showerror("Nothing Enabled", "Enable Serial, TCP, or both.")
+            return
 
+        url = self.url_entry.get()
         if not url.startswith("http"):
             messagebox.showerror("Invalid URL", "Please enter a valid HTTP/HTTPS URL.")
             return
 
+        self.save_config(silent=True)
+
         self.external_url = url
         self.running = True
-        self.connection_counter = 0
+        with self.counter_lock:
+            self.serial_count = 0
+            self.tcp_count = 0
+        self.update_counts()
 
         # Update UI
         self.start_button.config(state='disabled')
         self.stop_button.config(state='normal')
+        self.serial_check.config(state='disabled')
+        self.tcp_check.config(state='disabled')
 
-        if mode == "serial":
+        # Each channel starts independently; one failing doesn't stop the other
+        if use_serial:
             self.start_serial()
-        else:
+        if use_tcp:
             self.start_tcp()
+
+        if not (self.serial_active or self.tcp_active):
+            self.stop_listening()
 
     def start_serial(self):
         try:
@@ -382,18 +419,96 @@ class SerialTcpApp:
                 raise ValueError("No serial port selected")
 
             self.serial_baud = baud
+            self.serial_port_name = port
             self.serial_port = serial.Serial(port, baud, timeout=1)
-            self.status_label.config(text=f"● Serial Active - {port}@{baud}", fg=COLORS['success'])
+            self.serial_active = True
+            self.set_label(self.serial_status_label, f"Serial: ● Active - {port}@{baud}", COLORS['success'])
             self.update_text(self.received_text, f"Listening on serial port {port} at {baud} baud...")
 
             threading.Thread(target=self.read_serial, daemon=True).start()
         except Exception as e:
+            self.serial_active = False
+            self.set_label(self.serial_status_label, "Serial: ● Failed", COLORS['error'])
             messagebox.showerror("Serial Error", str(e))
+
+    def start_tcp(self):
+        ip = self.ip_entry.get()
+        try:
+            port = int(self.tcp_port_entry.get())
+        except ValueError:
+            self.set_label(self.tcp_status_label, "TCP: ● Failed", COLORS['error'])
+            messagebox.showerror("Invalid Port", "TCP port must be an integer.")
+            return
+
+        try:
+            self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+            self.server_socket.bind((ip, port))
+            self.server_socket.listen()
+            self.server_socket.settimeout(1.0)
+        except Exception as e:
+            self.close_server_socket()
+            self.set_label(self.tcp_status_label, "TCP: ● Failed", COLORS['error'])
+            self.update_text(self.received_text, f"Error binding socket: {e}")
+            messagebox.showerror("TCP Error", f"Could not listen on {ip}:{port}\n{e}")
+            return
+
+        self.tcp_active = True
+        self.set_label(self.tcp_status_label, f"TCP: ● Active - {ip}:{port}", COLORS['success'])
+        self.update_text(self.received_text, f"Listening on TCP {ip}:{port}...")
+
+        threading.Thread(target=self.run_tcp_server, daemon=True).start()
+
+    def close_server_socket(self):
+        if self.server_socket:
+            try:
+                self.server_socket.close()
+            except Exception:
+                pass
+            self.server_socket = None
+
+    def stop_listening(self):
+        was_running = self.running
+        self.running = False
+        self.serial_active = False
+        self.tcp_active = False
+
+        # Close serial port
+        if self.serial_port:
+            try:
+                self.serial_port.close()
+            except Exception:
+                pass
+            self.serial_port = None
+
+        # Close TCP socket
+        self.close_server_socket()
+
+        # Update UI
+        self.start_button.config(state='normal')
+        self.stop_button.config(state='disabled')
+        self.serial_check.config(state='normal')
+        self.tcp_check.config(state='normal')
+        self.serial_status_label.config(text="Serial: ● Offline", fg=COLORS['error'])
+        self.tcp_status_label.config(text="TCP: ● Offline", fg=COLORS['error'])
+        if was_running:
+            self.update_text(self.received_text, "Stopped listening.")
+
+    def channel_stopped(self):
+        """Called (on the UI thread) when a channel dies; stop fully if none remain."""
+        if self.running and not (self.serial_active or self.tcp_active):
             self.stop_listening()
+
+    def on_close(self):
+        self.save_config(silent=True)
+        self.stop_listening()
+        self.root.destroy()
+
+    # ------------------------------------------------------------------ serial
 
     def reopen_serial_port(self):
         available = [p.device for p in serial.tools.list_ports.comports()]
-        current = self.port_combobox.get()
+        current = self.serial_port_name
         port = current if current in available else (available[0] if available else None)
 
         if not port:
@@ -406,131 +521,103 @@ class SerialTcpApp:
                 except Exception:
                     pass
             self.serial_port = serial.Serial(port, self.serial_baud, timeout=1)
-            self.port_combobox.set(port)
-            self.port_status.config(text=f"Detected: {port}", fg=COLORS['success'])
-            self.status_label.config(text=f"● Serial Active - {port}@{self.serial_baud}", fg=COLORS['success'])
+            self.serial_port_name = port
+            self.run_on_ui(self.port_combobox.set, port)
+            self.set_label(self.port_status, f"Detected: {port}", COLORS['success'])
+            self.set_label(self.serial_status_label, f"Serial: ● Active - {port}@{self.serial_baud}",
+                           COLORS['success'])
             self.update_text(self.received_text, f"Reconnected on serial port {port}")
             return True
         except Exception:
             return False
 
-    def start_tcp(self):
-        ip = self.ip_entry.get()
-        try:
-            port = int(self.tcp_port_entry.get())
-        except ValueError:
-            messagebox.showerror("Invalid Port", "Port must be an integer.")
-            self.stop_listening()
-            return
-
-        self.status_label.config(text=f"● TCP Active - {ip}:{port}", fg=COLORS['success'])
-        self.update_text(self.received_text, f"Listening on TCP {ip}:{port}...")
-
-        threading.Thread(target=self.run_tcp_server, args=(ip, port), daemon=True).start()
-
-    def stop_listening(self):
-        self.running = False
-
-        # Close serial port
-        if self.serial_port and self.serial_port.is_open:
-            self.serial_port.close()
-
-        # Close TCP socket
-        if self.server_socket:
-            try:
-                self.server_socket.close()
-            except Exception:
-                pass
-
-        # Update UI
-        self.start_button.config(state='normal')
-        self.stop_button.config(state='disabled')
-        self.status_label.config(text="● Offline", fg=COLORS['error'])
-        self.update_text(self.received_text, "Stopped listening.")
-
     def read_serial(self):
-        while self.running:
+        while self.running and self.serial_active:
             try:
-                if self.serial_port.in_waiting:
-                    raw = self.serial_port.readline()
-                    data = raw.decode(errors='ignore').strip()
-                    if data:
-                        log_machine_data("Serial", data)
-                        self.update_text(self.received_text, f"Serial: {data}")
-                        self.forward_data(data)
-                        self.connection_counter += 1
-                        self.connection_count.config(text=f"Messages: {self.connection_counter}")
+                raw = self.serial_port.readline()  # returns b'' after the 1s timeout
+                data = raw.decode(errors='ignore').strip()
+                if data:
+                    log_machine_data("Serial", data)
+                    self.update_text(self.received_text, f"[Serial] {data}")
+                    with self.counter_lock:
+                        self.serial_count += 1
+                    self.update_counts()
+                    self.forward_data("Serial", data)
             except (serial.SerialException, OSError) as e:
-                if not self.running:
+                if not (self.running and self.serial_active):
                     break
                 self.update_text(self.received_text, f"Serial port disconnected ({e}), reconnecting...")
-                self.status_label.config(text="● Reconnecting...", fg=COLORS['warning'])
-                while self.running and not self.reopen_serial_port():
+                self.set_label(self.serial_status_label, "Serial: ● Reconnecting...", COLORS['warning'])
+                while self.running and self.serial_active and not self.reopen_serial_port():
                     threading.Event().wait(2)
             except Exception as e:
-                if self.running:
+                if self.running and self.serial_active:
                     self.update_text(self.received_text, f"Serial error: {e}")
+                    self.serial_active = False
+                    self.set_label(self.serial_status_label, "Serial: ● Stopped (error)", COLORS['error'])
+                    self.run_on_ui(self.channel_stopped)
                 break
 
-    def run_tcp_server(self, host, port):
-        self.server_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        self.server_socket.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    # ------------------------------------------------------------------ TCP
 
-        try:
-            self.server_socket.bind((host, port))
-            self.server_socket.listen()
-        except Exception as e:
-            self.update_text(self.received_text, f"Error binding socket: {str(e)}")
-            self.running = False
-            self.start_button.config(state='normal')
-            self.stop_button.config(state='disabled')
-            self.status_label.config(text="● Offline", fg=COLORS['error'])
-            return
-
-        while self.running:
+    def run_tcp_server(self):
+        server = self.server_socket
+        while self.running and self.tcp_active:
             try:
-                self.server_socket.settimeout(1.0)
-                client_socket, addr = self.server_socket.accept()
-                self.connection_counter += 1
-                self.connection_count.config(text=f"Connections: {self.connection_counter}")
+                client_socket, addr = server.accept()
+                with self.counter_lock:
+                    self.tcp_count += 1
+                self.update_counts()
                 threading.Thread(target=self.handle_tcp_client, args=(client_socket, addr), daemon=True).start()
             except socket.timeout:
                 continue
             except Exception as e:
-                if self.running:
-                    self.update_text(self.received_text, f"Server error: {str(e)}")
+                if self.running and self.tcp_active:
+                    self.update_text(self.received_text, f"Server error: {e}")
+                    self.tcp_active = False
+                    self.set_label(self.tcp_status_label, "TCP: ● Stopped (error)", COLORS['error'])
+                    self.run_on_ui(self.channel_stopped)
                 break
 
     def handle_tcp_client(self, conn, addr):
+        source = f"TCP {addr[0]}:{addr[1]}"
         with conn:
-            try:
-                data = conn.recv(4096)
+            conn.settimeout(1.0)
+            # Keep reading until the client disconnects, so persistent connections work
+            while self.running and self.tcp_active:
+                try:
+                    data = conn.recv(4096)
+                except socket.timeout:
+                    continue
+                except Exception as e:
+                    self.update_text(self.received_text, f"Client error ({source}): {e}")
+                    break
                 if not data:
-                    return
+                    break
 
                 received_data = data.decode('utf-8', errors='ignore')
-                log_machine_data(f"TCP {addr}", received_data)
-                self.update_text(self.received_text, f"From {addr}: {received_data}")
-                self.forward_data(received_data)
-            except Exception as e:
-                self.update_text(self.received_text, f"Client error: {str(e)}")
+                log_machine_data(source, received_data)
+                self.update_text(self.received_text, f"[{source}] {received_data}")
+                self.forward_data(source, received_data)
 
-    def forward_data(self, data):
+    # ------------------------------------------------------------------ API
+
+    def forward_data(self, source, data):
         # Format as JSON
         json_data = {"data": data}
         formatted_json = json.dumps(json_data, indent=2)
-        self.update_text(self.sent_text, formatted_json)
-        log_sent_data(formatted_json)
+        self.update_text(self.sent_text, f"[{source}]\n{formatted_json}")
+        log_sent_data(source, formatted_json)
 
         # Send to external API
         try:
             headers = {'Content-Type': 'application/json'}
             response = requests.post(self.external_url, json=json_data, headers=headers, timeout=5)
-            result = f"Status: {response.status_code}\n{response.text}"
-            log_api_response(response.status_code, response.text)
+            result = f"[{source}] Status: {response.status_code}\n{response.text}"
+            log_api_response(source, response.status_code, response.text)
         except Exception as e:
-            result = f"API Error: {str(e)}"
-            log_api_response("ERROR", str(e))
+            result = f"[{source}] API Error: {e}"
+            log_api_response(source, "ERROR", str(e))
 
         self.update_text(self.response_text, result)
 
