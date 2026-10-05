@@ -14,6 +14,8 @@ CONFIG_FILE = 'liscom_config.json'
 DATA_LOG_FILE = os.path.join(SAVE_DIR, 'machine_data.log')
 SENT_LOG_FILE = os.path.join(SAVE_DIR, 'sent_data.log')
 RESPONSE_LOG_FILE = os.path.join(SAVE_DIR, 'api_responses.log')
+# If set, this environment variable overrides the API key saved in the config file
+API_KEY_ENV = 'LISCOM_API_KEY'
 
 os.makedirs(SAVE_DIR, exist_ok=True)
 
@@ -72,6 +74,7 @@ class SerialTcpApp:
         self.tcp_count = 0
         self.counter_lock = threading.Lock()
         self.external_url = ''
+        self.api_key = ''
         os.makedirs(SAVE_DIR, exist_ok=True)
 
         # Configure style
@@ -219,7 +222,40 @@ class SerialTcpApp:
         self.url_entry = tk.Entry(api_frame, bg=COLORS['entry_bg'], fg=COLORS['fg'],
                                  insertbackground=COLORS['fg'], relief='flat', font=('Arial', 10))
         self.url_entry.pack(side='left', fill='x', expand=True, padx=5, ipady=5)
-        self.url_entry.insert(0, 'http://127.0.0.1:8003/api/hl7/receive')
+        self.url_entry.insert(0, 'http://127.0.0.1:8003/api/hl7/receive-results')
+
+        # API key sent as `X-API-Key` (must match HL7_API_KEY on the receiving system)
+        key_frame = tk.Frame(self.root, bg=COLORS['bg'])
+        key_frame.pack(pady=5, padx=10, fill='x')
+
+        tk.Label(key_frame, text="API Key:", bg=COLORS['bg'], fg=COLORS['fg'],
+                font=('Arial', 10, 'bold')).pack(side='left', padx=(0, 5))
+
+        self.api_key_entry = tk.Entry(key_frame, show='•', bg=COLORS['entry_bg'], fg=COLORS['fg'],
+                                      insertbackground=COLORS['fg'], relief='flat', font=('Arial', 10))
+        self.api_key_entry.pack(side='left', fill='x', expand=True, padx=5, ipady=5)
+
+        self.show_key_btn = tk.Button(key_frame, text="👁 Show", command=self.toggle_key_visibility,
+                                      bg=COLORS['button'], fg=COLORS['fg'], font=('Arial', 9),
+                                      relief='flat', padx=10, pady=5, cursor='hand2')
+        self.show_key_btn.pack(side='left', padx=5)
+
+        self.key_source_label = tk.Label(key_frame, text="", bg=COLORS['bg'],
+                                         fg=COLORS['warning'], font=('Arial', 9))
+        self.key_source_label.pack(side='left', padx=5)
+        if os.environ.get(API_KEY_ENV):
+            self.key_source_label.config(text=f"Using {API_KEY_ENV} from environment")
+
+    def toggle_key_visibility(self):
+        if self.api_key_entry.cget('show'):
+            self.api_key_entry.config(show='')
+            self.show_key_btn.config(text="🙈 Hide")
+        else:
+            self.api_key_entry.config(show='•')
+            self.show_key_btn.config(text="👁 Show")
+
+    def get_api_key(self):
+        return (os.environ.get(API_KEY_ENV) or self.api_key_entry.get()).strip()
 
     def create_control_buttons(self):
         button_frame = tk.Frame(self.root, bg=COLORS['bg'])
@@ -257,11 +293,14 @@ class SerialTcpApp:
             'ip': self.ip_entry.get(),
             'tcp_port': self.tcp_port_entry.get(),
             'url': self.url_entry.get(),
+            'api_key': self.api_key_entry.get().strip(),
         }
 
     def save_config(self, silent=False):
         try:
-            with open(CONFIG_FILE, 'w', encoding='utf-8') as f:
+            # The file holds the API key, so create it readable by the owner only
+            fd = os.open(CONFIG_FILE, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600)
+            with os.fdopen(fd, 'w', encoding='utf-8') as f:
                 json.dump(self.get_config(), f, indent=2)
             if not silent:
                 messagebox.showinfo("Configuration Saved", f"Configuration saved to {CONFIG_FILE}")
@@ -294,7 +333,8 @@ class SerialTcpApp:
             self.port_combobox.set(port)
 
         for entry, key in ((self.baud_entry, 'baud'), (self.ip_entry, 'ip'),
-                           (self.tcp_port_entry, 'tcp_port'), (self.url_entry, 'url')):
+                           (self.tcp_port_entry, 'tcp_port'), (self.url_entry, 'url'),
+                           (self.api_key_entry, 'api_key')):
             value = config.get(key)
             if value:
                 entry.delete(0, tk.END)
@@ -379,9 +419,17 @@ class SerialTcpApp:
             messagebox.showerror("Invalid URL", "Please enter a valid HTTP/HTTPS URL.")
             return
 
+        api_key = self.get_api_key()
+        if not api_key and not messagebox.askyesno(
+                "No API Key",
+                "No API key is set, so the receiving system will reject results (401).\n\n"
+                "Start anyway?"):
+            return
+
         self.save_config(silent=True)
 
         self.external_url = url
+        self.api_key = api_key
         self.running = True
         with self.counter_lock:
             self.serial_count = 0
@@ -611,9 +659,15 @@ class SerialTcpApp:
 
         # Send to external API
         try:
-            headers = {'Content-Type': 'application/json'}
+            headers = {'Content-Type': 'application/json', 'Accept': 'application/json'}
+            if self.api_key:
+                headers['X-API-Key'] = self.api_key
             response = requests.post(self.external_url, json=json_data, headers=headers, timeout=5)
             result = f"[{source}] Status: {response.status_code}\n{response.text}"
+            if response.status_code == 401:
+                result += "\n⚠ Unauthorized: the API key is missing or does not match HL7_API_KEY."
+            elif response.status_code == 403:
+                result += "\n⚠ Forbidden: this computer's IP is not in HL7_ALLOWED_IPS."
             log_api_response(source, response.status_code, response.text)
         except Exception as e:
             result = f"[{source}] API Error: {e}"

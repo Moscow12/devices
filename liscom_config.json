@@ -1,9 +1,0 @@
-{
-  "serial_enabled": false,
-  "tcp_enabled": true,
-  "port": "/dev/ttyUSB1",
-  "baud": "9600",
-  "ip": "192.168.0.110",
-  "tcp_port": "5000",
-  "url": "http://192.168.0.110:8080/api/hl7/receive-results"
-}
