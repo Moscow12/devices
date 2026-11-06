@@ -17,6 +17,15 @@ RESPONSE_LOG_FILE = os.path.join(SAVE_DIR, 'api_responses.log')
 # If set, this environment variable overrides the API key saved in the config file
 API_KEY_ENV = 'LISCOM_API_KEY'
 
+# HL7 over TCP uses MLLP framing: <VT> message <FS><CR>
+MLLP_START = b'\x0b'
+MLLP_END = b'\x1c\x0d'
+MLLP_MAX_BUFFER = 1024 * 1024
+# Mindray BC-20s/BC-30s: the analyzer is the TCP *server* on a fixed port, the LIS dials in
+MINDRAY_DEFAULT_IP = '192.168.0.70'
+MINDRAY_DEFAULT_PORT = '5100'
+MINDRAY_RECONNECT_SECONDS = 5
+
 os.makedirs(SAVE_DIR, exist_ok=True)
 
 _log_lock = threading.Lock()
@@ -39,6 +48,76 @@ def log_sent_data(source, data):
 
 def log_api_response(source, status_code, body):
     _append_log(RESPONSE_LOG_FILE, f"RESPONSE {source}", f"Status {status_code}: {body}")
+
+# ---------------------------------------------------------------------- HL7 / MLLP helpers
+
+def extract_mllp_frames(buffer):
+    """Split complete MLLP frames off the front of buffer. Returns (messages, remaining_buffer)."""
+    messages = []
+    while True:
+        end = buffer.find(MLLP_END)
+        if end == -1:
+            break
+        frame = buffer[:end]
+        buffer = buffer[end + len(MLLP_END):]
+        start = frame.find(MLLP_START)
+        if start != -1:
+            frame = frame[start + 1:]
+        if frame.strip():
+            messages.append(frame)
+    if len(buffer) > MLLP_MAX_BUFFER:
+        # No end marker in a megabyte of data: the stream is not MLLP, so drop it
+        buffer = b''
+    return messages, buffer
+
+
+def mllp_wrap(message):
+    return MLLP_START + message.encode('utf-8') + MLLP_END
+
+
+def hl7_msh_fields(message):
+    """Return the MSH segment split into fields, indexed so that fields[n - 1] is MSH-n."""
+    for segment in message.replace('\n', '\r').split('\r'):
+        if segment.startswith('MSH') and len(segment) > 3:
+            return segment.split(segment[3])
+    return None
+
+
+def hl7_field(fields, n):
+    return fields[n - 1] if fields and len(fields) >= n else ''
+
+
+def hl7_message_type(message):
+    """E.g. 'ORU^R01' for a result, 'ORM^O01' for a worklist query."""
+    return hl7_field(hl7_msh_fields(message), 9)
+
+
+def build_hl7_ack(message, code='AA'):
+    """Build an HL7 ACK (MSA|AA) for a received message, or None if it has no MSH."""
+    f = hl7_msh_fields(message)
+    if not f:
+        return None
+    sep = '|'
+    encoding = hl7_field(f, 2) or '^~\\&'
+    comp = encoding[0]
+    msg_type = hl7_field(f, 9)
+    trigger = msg_type.split(comp)[1] if comp in msg_type else ''
+    control_id = hl7_field(f, 10)
+    msh = sep.join([
+        'MSH', encoding,
+        hl7_field(f, 5) or 'LIS', hl7_field(f, 6),    # we are the sender now
+        hl7_field(f, 3), hl7_field(f, 4),             # the analyzer is the receiver
+        datetime.now().strftime('%Y%m%d%H%M%S'), '',
+        f"ACK{comp}{trigger}" if trigger else 'ACK',
+        control_id,
+        hl7_field(f, 11) or 'P',
+        hl7_field(f, 12) or '2.3.1',
+        '', '', '', '', '',
+        hl7_field(f, 18),                             # character set (Mindray: UNICODE)
+    ])
+    msa = sep.join(['MSA', code, control_id])
+    return msh + '\r' + msa + '\r'
+
 
 # Color scheme (matching lis.py)
 COLORS = {
@@ -70,6 +149,10 @@ class SerialTcpApp:
         self.running = False
         self.serial_active = False
         self.tcp_active = False
+        self.mindray_socket = None
+        self.mindray_active = False
+        self.mindray_count = 0
+        self.stop_event = threading.Event()
         self.serial_count = 0
         self.tcp_count = 0
         self.counter_lock = threading.Lock()
@@ -86,6 +169,7 @@ class SerialTcpApp:
         # Configuration frames (both channels can run at the same time)
         self.create_serial_config()
         self.create_tcp_config()
+        self.create_mindray_config()
 
         # API URL (common for both channels)
         self.create_api_config()
@@ -132,13 +216,19 @@ class SerialTcpApp:
                                          fg=COLORS['error'], font=('Arial', 9, 'bold'), anchor='w')
         self.tcp_status_label.pack(side='left', padx=10, pady=5)
 
-        self.connection_count = tk.Label(self.status_bar, text="Serial messages: 0 | TCP connections: 0",
+        self.mindray_status_label = tk.Label(self.status_bar, text="Mindray: ● Offline", bg=COLORS['panel'],
+                                             fg=COLORS['error'], font=('Arial', 9, 'bold'), anchor='w')
+        self.mindray_status_label.pack(side='left', padx=10, pady=5)
+
+        self.connection_count = tk.Label(self.status_bar,
+                                         text="Serial messages: 0 | TCP connections: 0 | Mindray messages: 0",
                                          bg=COLORS['panel'], fg=COLORS['fg'], font=('Arial', 9), anchor='e')
         self.connection_count.pack(side='right', padx=10, pady=5)
 
     def update_counts(self):
         with self.counter_lock:
-            text = f"Serial messages: {self.serial_count} | TCP connections: {self.tcp_count}"
+            text = (f"Serial messages: {self.serial_count} | TCP connections: {self.tcp_count} | "
+                    f"Mindray messages: {self.mindray_count}")
         self.run_on_ui(self.connection_count.config, text=text)
 
     def create_checkbox(self, parent, text, variable):
@@ -211,6 +301,38 @@ class SerialTcpApp:
                                        insertbackground=COLORS['fg'], relief='flat', font=('Arial', 10))
         self.tcp_port_entry.pack(side='left', padx=5, ipady=5)
         self.tcp_port_entry.insert(0, '5000')
+
+    def create_mindray_config(self):
+        """Mindray BC-20s/BC-30s: the analyzer listens (fixed port 5100) and the LIS connects out to it."""
+        self.mindray_frame = tk.Frame(self.root, bg=COLORS['bg'])
+        self.mindray_frame.pack(pady=5, padx=10, fill='x')
+
+        row1 = tk.Frame(self.mindray_frame, bg=COLORS['bg'])
+        row1.pack(fill='x', pady=5)
+
+        self.mindray_enabled = tk.BooleanVar(value=False)
+        self.mindray_check = self.create_checkbox(row1, "🔬 Mindray", self.mindray_enabled)
+        self.mindray_check.config(width=10, anchor='w')
+        self.mindray_check.pack(side='left', padx=(0, 10))
+
+        tk.Label(row1, text="Analyzer IP:", bg=COLORS['bg'], fg=COLORS['fg'],
+                font=('Arial', 10, 'bold')).pack(side='left', padx=(0, 5))
+
+        self.mindray_ip_entry = tk.Entry(row1, width=15, bg=COLORS['entry_bg'], fg=COLORS['fg'],
+                                         insertbackground=COLORS['fg'], relief='flat', font=('Arial', 10))
+        self.mindray_ip_entry.pack(side='left', padx=5, ipady=5)
+        self.mindray_ip_entry.insert(0, MINDRAY_DEFAULT_IP)
+
+        tk.Label(row1, text="Port:", bg=COLORS['bg'], fg=COLORS['fg'],
+                font=('Arial', 10, 'bold')).pack(side='left', padx=(15, 5))
+
+        self.mindray_port_entry = tk.Entry(row1, width=8, bg=COLORS['entry_bg'], fg=COLORS['fg'],
+                                           insertbackground=COLORS['fg'], relief='flat', font=('Arial', 10))
+        self.mindray_port_entry.pack(side='left', padx=5, ipady=5)
+        self.mindray_port_entry.insert(0, MINDRAY_DEFAULT_PORT)
+
+        tk.Label(row1, text="(LIS connects to the analyzer: BC-20s/BC-30s, HL7)", bg=COLORS['bg'],
+                 fg=COLORS['warning'], font=('Arial', 9)).pack(side='left', padx=10)
 
     def create_api_config(self):
         api_frame = tk.Frame(self.root, bg=COLORS['bg'])
@@ -292,6 +414,9 @@ class SerialTcpApp:
             'baud': self.baud_entry.get(),
             'ip': self.ip_entry.get(),
             'tcp_port': self.tcp_port_entry.get(),
+            'mindray_enabled': self.mindray_enabled.get(),
+            'mindray_ip': self.mindray_ip_entry.get(),
+            'mindray_port': self.mindray_port_entry.get(),
             'url': self.url_entry.get(),
             'api_key': self.api_key_entry.get().strip(),
         }
@@ -327,13 +452,15 @@ class SerialTcpApp:
             # Backward compatibility with the old single-mode config
             self.serial_enabled.set(config['mode'] == 'serial')
             self.tcp_enabled.set(config['mode'] == 'tcp')
+        self.mindray_enabled.set(bool(config.get('mindray_enabled', False)))
 
         port = config.get('port', '')
         if port:
             self.port_combobox.set(port)
 
         for entry, key in ((self.baud_entry, 'baud'), (self.ip_entry, 'ip'),
-                           (self.tcp_port_entry, 'tcp_port'), (self.url_entry, 'url'),
+                           (self.tcp_port_entry, 'tcp_port'), (self.mindray_ip_entry, 'mindray_ip'),
+                           (self.mindray_port_entry, 'mindray_port'), (self.url_entry, 'url'),
                            (self.api_key_entry, 'api_key')):
             value = config.get(key)
             if value:
@@ -410,8 +537,9 @@ class SerialTcpApp:
 
         use_serial = self.serial_enabled.get()
         use_tcp = self.tcp_enabled.get()
-        if not (use_serial or use_tcp):
-            messagebox.showerror("Nothing Enabled", "Enable Serial, TCP, or both.")
+        use_mindray = self.mindray_enabled.get()
+        if not (use_serial or use_tcp or use_mindray):
+            messagebox.showerror("Nothing Enabled", "Enable at least one of Serial, TCP or Mindray.")
             return
 
         url = self.url_entry.get()
@@ -431,9 +559,11 @@ class SerialTcpApp:
         self.external_url = url
         self.api_key = api_key
         self.running = True
+        self.stop_event.clear()
         with self.counter_lock:
             self.serial_count = 0
             self.tcp_count = 0
+            self.mindray_count = 0
         self.update_counts()
 
         # Update UI
@@ -441,15 +571,21 @@ class SerialTcpApp:
         self.stop_button.config(state='normal')
         self.serial_check.config(state='disabled')
         self.tcp_check.config(state='disabled')
+        self.mindray_check.config(state='disabled')
 
         # Each channel starts independently; one failing doesn't stop the other
         if use_serial:
             self.start_serial()
         if use_tcp:
             self.start_tcp()
+        if use_mindray:
+            self.start_mindray()
 
-        if not (self.serial_active or self.tcp_active):
+        if not self.any_channel_active():
             self.stop_listening()
+
+    def any_channel_active(self):
+        return self.serial_active or self.tcp_active or self.mindray_active
 
     def start_serial(self):
         try:
@@ -507,6 +643,32 @@ class SerialTcpApp:
 
         threading.Thread(target=self.run_tcp_server, daemon=True).start()
 
+    def start_mindray(self):
+        ip = self.mindray_ip_entry.get().strip()
+        try:
+            port = int(self.mindray_port_entry.get())
+        except ValueError:
+            self.set_label(self.mindray_status_label, "Mindray: ● Failed", COLORS['error'])
+            messagebox.showerror("Invalid Port", "Mindray port must be an integer (default 5100).")
+            return
+        if not ip:
+            self.set_label(self.mindray_status_label, "Mindray: ● Failed", COLORS['error'])
+            messagebox.showerror("Invalid IP", "Enter the analyzer's IP address.")
+            return
+
+        # The connection is made (and retried) in the background, so an analyzer that is
+        # switched off or still booting does not block startup.
+        self.mindray_active = True
+        threading.Thread(target=self.run_mindray_client, args=(ip, port), daemon=True).start()
+
+    def close_mindray_socket(self):
+        sock, self.mindray_socket = self.mindray_socket, None
+        if sock:
+            try:
+                sock.close()
+            except Exception:
+                pass
+
     def close_server_socket(self):
         if self.server_socket:
             try:
@@ -518,8 +680,10 @@ class SerialTcpApp:
     def stop_listening(self):
         was_running = self.running
         self.running = False
+        self.stop_event.set()
         self.serial_active = False
         self.tcp_active = False
+        self.mindray_active = False
 
         # Close serial port
         if self.serial_port:
@@ -529,22 +693,25 @@ class SerialTcpApp:
                 pass
             self.serial_port = None
 
-        # Close TCP socket
+        # Close TCP sockets
         self.close_server_socket()
+        self.close_mindray_socket()
 
         # Update UI
         self.start_button.config(state='normal')
         self.stop_button.config(state='disabled')
         self.serial_check.config(state='normal')
         self.tcp_check.config(state='normal')
+        self.mindray_check.config(state='normal')
         self.serial_status_label.config(text="Serial: ● Offline", fg=COLORS['error'])
         self.tcp_status_label.config(text="TCP: ● Offline", fg=COLORS['error'])
+        self.mindray_status_label.config(text="Mindray: ● Offline", fg=COLORS['error'])
         if was_running:
             self.update_text(self.received_text, "Stopped listening.")
 
     def channel_stopped(self):
         """Called (on the UI thread) when a channel dies; stop fully if none remain."""
-        if self.running and not (self.serial_active or self.tcp_active):
+        if self.running and not self.any_channel_active():
             self.stop_listening()
 
     def on_close(self):
@@ -648,9 +815,110 @@ class SerialTcpApp:
                 self.update_text(self.received_text, f"[{source}] {received_data}")
                 self.forward_data(source, received_data)
 
+    # ------------------------------------------------------------------ Mindray (LIS is the TCP client)
+
+    def run_mindray_client(self, ip, port):
+        """Keep a connection open to the analyzer, reconnecting whenever it drops."""
+        source = f"Mindray {ip}:{port}"
+        while self.running and self.mindray_active:
+            sock = None
+            try:
+                self.set_label(self.mindray_status_label, f"Mindray: ● Connecting to {ip}:{port}...",
+                               COLORS['warning'])
+                sock = socket.create_connection((ip, port), timeout=5)
+                sock.setsockopt(socket.SOL_SOCKET, socket.SO_KEEPALIVE, 1)
+                sock.settimeout(1.0)
+                self.mindray_socket = sock
+                self.set_label(self.mindray_status_label, f"Mindray: ● Connected - {ip}:{port}",
+                               COLORS['success'])
+                self.update_text(self.received_text, f"Connected to Mindray analyzer at {ip}:{port}")
+
+                buffer = b''
+                while self.running and self.mindray_active:
+                    try:
+                        chunk = sock.recv(4096)
+                    except socket.timeout:
+                        continue
+                    if not chunk:
+                        raise ConnectionError("analyzer closed the connection")
+                    buffer += chunk
+                    messages, buffer = extract_mllp_frames(buffer)
+                    for raw in messages:
+                        self.handle_mindray_message(sock, source, raw)
+            except Exception as e:
+                if not (self.running and self.mindray_active):
+                    break
+                self.update_text(self.received_text,
+                                 f"Mindray {ip}:{port} not reachable ({e}); "
+                                 f"retrying in {MINDRAY_RECONNECT_SECONDS}s...")
+                self.set_label(self.mindray_status_label, "Mindray: ● Reconnecting...", COLORS['warning'])
+            finally:
+                if sock:
+                    try:
+                        sock.close()
+                    except Exception:
+                        pass
+                if self.mindray_socket is sock:
+                    self.mindray_socket = None
+
+            # Returns early as soon as Stop is pressed
+            if self.stop_event.wait(MINDRAY_RECONNECT_SECONDS):
+                break
+
+    def send_to_mindray(self, sock, source, message, what):
+        readable = message.replace('\r', '\n').strip()
+        try:
+            sock.sendall(mllp_wrap(message))
+            log_sent_data(f"{source} {what}", readable)
+            self.update_text(self.sent_text, f"[{source}] {what} -> analyzer\n{readable}")
+        except Exception as e:
+            self.update_text(self.received_text, f"[{source}] Failed to send {what}: {e}")
+
+    def handle_mindray_message(self, sock, source, raw):
+        message = raw.decode('utf-8', errors='replace')
+        readable = message.replace('\r', '\n').strip()
+        msg_type = hl7_message_type(message)
+
+        log_machine_data(source, readable)
+        self.update_text(self.received_text, f"[{source}] {msg_type or 'unknown'}\n{readable}")
+        with self.counter_lock:
+            self.mindray_count += 1
+        self.update_counts()
+
+        if msg_type.startswith('ACK'):
+            return  # the analyzer acknowledging something we sent; nothing to forward
+
+        # Acknowledge results straight away, before the (possibly slow) API call,
+        # so the analyzer's ACK timeout is never hit.
+        if msg_type.startswith('ORU'):
+            ack = build_hl7_ack(message)
+            if ack:
+                self.send_to_mindray(sock, source, ack, "ACK")
+
+        response = self.forward_data(source, message)
+
+        # "Auto Fetch Info From LIS": the analyzer asks for the patient/order of a sample.
+        # If the API answers with {"hl7": "<reply message>"}, that reply is sent back.
+        if msg_type.startswith(('ORM', 'QRY')):
+            reply = None
+            try:
+                body = response.json() if response is not None and response.ok else None
+                if isinstance(body, dict) and isinstance(body.get('hl7'), str):
+                    reply = body['hl7'].replace('\r\n', '\r').replace('\n', '\r')
+            except ValueError:
+                pass
+            if reply:
+                self.send_to_mindray(sock, source, reply, "worklist reply")
+            else:
+                self.update_text(self.response_text,
+                                 f"[{source}] Worklist query ({msg_type}) received, but the API returned no "
+                                 f"'hl7' reply. Untick 'Auto Fetch Info From LIS' on the analyzer if unused.")
+
     # ------------------------------------------------------------------ API
 
     def forward_data(self, source, data):
+        """Post data to the API; returns the requests.Response, or None on a connection error."""
+        response = None
         # Format as JSON
         json_data = {"data": data}
         formatted_json = json.dumps(json_data, indent=2)
@@ -674,6 +942,7 @@ class SerialTcpApp:
             log_api_response(source, "ERROR", str(e))
 
         self.update_text(self.response_text, result)
+        return response
 
 
 if __name__ == "__main__":

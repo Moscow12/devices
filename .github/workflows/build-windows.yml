@@ -1,0 +1,26 @@
+name: Build HosPiLis Windows exe
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'HosPiLis/**'
+      - '.github/workflows/build-windows.yml'
+
+jobs:
+  build:
+    runs-on: windows-latest
+    defaults:
+      run:
+        working-directory: HosPiLis
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r requirements.txt
+      - run: pyinstaller --clean --noconfirm HosPiLis.spec
+      - uses: actions/upload-artifact@v4
+        with:
+          name: HosPiLis-windows
+          path: HosPiLis/dist/HosPiLis.exe
