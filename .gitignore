@@ -1,3 +1,6 @@
 
 # Holds the LIS API key — never commit
 liscom_config.json
+
+# Laravel API key for zkteco.py — never commit
+zkteco_api_key.txt
